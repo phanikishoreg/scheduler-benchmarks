@@ -11,7 +11,7 @@ static void call_getrlimit(int id, char *name)
 	struct rlimit rl;
 
 	if (getrlimit(id, &rl)) {
-		perror("getrlimit: ");
+		perror("getrlimit:");
 		exit(-1);
 	}		
 }
@@ -23,7 +23,7 @@ static void call_setrlimit(int id, rlim_t c, rlim_t m)
 	rl.rlim_cur = c;
 	rl.rlim_max = m;
 	if (setrlimit(id, &rl)) {
-		perror("getrlimit: ");
+		perror("setrlimit:");
 		exit(-1);
 	}		
 }

@@ -7,7 +7,7 @@
 
 #define NSEC_WAIT 1000
 
-extern void set_prio (void);
+extern void set_prio (unsigned int);
 
 unsigned long long last;
 unsigned long long end;
@@ -37,7 +37,7 @@ main (void)
   struct itimerspec t;
 
   //setpriority (PRIO_PROCESS, 0, -20);
-  set_prio();
+  set_prio(0);
 
   sigfillset (&ss);
   sa.sa_handler = NULL;
