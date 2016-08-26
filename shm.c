@@ -81,10 +81,10 @@ main (void)
   t.it_value.tv_sec = 0;
   t.it_value.tv_nsec = NSEC_WAIT;
 
+  set_prio (0);
   child = fork ();
 
   if (child > 0) {
-    set_prio (0);
     timer_settime (tid, 0, &t, NULL);
 
     while (1)
