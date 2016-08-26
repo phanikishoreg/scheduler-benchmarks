@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,11 +29,62 @@ static void call_setrlimit(int id, rlim_t c, rlim_t m)
 	}		
 }
 
+static void thd_affinity(pthread_t thd)
+{
+	cpu_set_t cpuset;
+	int i;
+
+	CPU_ZERO(&cpuset);
+	CPU_SET(0, &cpuset);
+
+	if (pthread_setaffinity_np(thd, sizeof(cpu_set_t), &cpuset)) {
+		perror("pthread_setaffinity_np:");
+	}
+	if (pthread_getaffinity_np(thd, sizeof(cpu_set_t), &cpuset)) {
+		perror("pthread_getaffinity_np:");
+	}
+
+	if (!CPU_ISSET(0, &cpuset)) {
+		printf("affinity not set\n");
+	} 
+
+	for (i = 1 ; i < CPU_SETSIZE ; i ++) {
+		if (CPU_ISSET(i, &cpuset))
+			printf("affinity set invalid: %d\n", i);
+	}
+}
+
+static void proc_affinity(void)
+{
+	cpu_set_t cpuset;
+	int i;
+
+	CPU_ZERO(&cpuset);
+	CPU_SET(0, &cpuset);
+
+	if (sched_setaffinity(0, sizeof(cpu_set_t), &cpuset)) {
+		perror("sched_setaffinity:");
+	}
+	if (sched_getaffinity(0, sizeof(cpu_set_t), &cpuset)) {
+		perror("sched_getaffinity:");
+	}
+
+	if (!CPU_ISSET(0, &cpuset)) {
+		printf("affinity not set\n");
+	} 
+
+	for (i = 1 ; i < CPU_SETSIZE ; i ++) {
+		if (CPU_ISSET(i, &cpuset))
+			printf("affinity set invalid: %d\n", i);
+	}
+}
+
 void pthread_prio(pthread_t thread, unsigned int nice)
 {
         struct sched_param sp;
 	int policy;
 
+	thd_affinity(thread);
         call_getrlimit(RLIMIT_CPU, "CPU");
 #ifdef RLIMIT_RTTIME
         call_getrlimit(RLIMIT_RTTIME, "RTTIME");
@@ -62,6 +114,7 @@ void set_prio(unsigned int nice)
 {
 	struct sched_param sp;
 
+	proc_affinity();
 	call_getrlimit(RLIMIT_CPU, "CPU");
 #ifdef RLIMIT_RTTIME
 	call_getrlimit(RLIMIT_RTTIME, "RTTIME");

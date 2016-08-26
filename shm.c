@@ -14,8 +14,8 @@
 
 pid_t parent;
 pid_t child;
-unsigned long long *shm;
-unsigned long long end;
+volatile unsigned long long *shm;
+volatile unsigned long long end;
 
 extern void set_prio (unsigned int);
 
@@ -34,7 +34,7 @@ handler (int sig, siginfo_t *si, void *v)
   printf ("%lld\n", end - *shm);
   kill (child, SIGKILL);
   wait (NULL);
-  munmap (shm, PAGE_SIZE);
+  munmap ((void *)shm, PAGE_SIZE);
   shm_unlink (SHM_NAME);
   exit (0);
 }

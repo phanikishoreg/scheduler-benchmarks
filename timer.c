@@ -9,8 +9,7 @@
 
 extern void set_prio (unsigned int);
 
-unsigned long long last;
-unsigned long long end;
+volatile unsigned long long last, end;
 
 static __inline__ unsigned long long
 rdtsc (void)

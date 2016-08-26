@@ -14,7 +14,7 @@
 #define PAGE_SIZE (sizeof(unsigned long long))
 
 pthread_t sleeper, spinner;
-unsigned long long last, end;
+volatile unsigned long long last, end;
 
 extern void set_prio (unsigned int);
 extern void pthread_prio (pthread_t, unsigned int);
