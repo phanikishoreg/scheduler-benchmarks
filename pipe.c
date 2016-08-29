@@ -8,7 +8,7 @@
 #include <sys/wait.h>
 
 #define PAGE_SIZE   4096
-#define U_WAIT      100
+#define USEC_WAIT      100
 
 extern void set_prio (unsigned int);
 
@@ -32,7 +32,7 @@ main(int argc, char **argv)
 	if (argc < 3) {
 		printf("Usage: %s <input_file> <read/write>\n", argv[0]);
 		printf("\t <input_file> : file containing data for this test\n");
-		printf("\t <read/readblk/write> : read - ubench for read\t\treadblk - ubench for blocking read\t\twrite - ubench for write\n");
+		printf("\t <read/readblk/write> : read - ubench for read\n\t\t readblk - ubench for blocking read\n\t\t write - ubench for write\n");
 		return -1;
 	}
 
@@ -77,7 +77,7 @@ main(int argc, char **argv)
 	child = fork();
 	if (child > 0) {
 		close(pipe_fd[0]);
-		usleep(U_WAIT);
+		usleep(USEC_WAIT);
 		if (write_delay == 1 && write(pipe_fd[1], data_buf, strlen(data_buf)) < 0) {
 			perror("write");
 			close(pipe_fd[1]);

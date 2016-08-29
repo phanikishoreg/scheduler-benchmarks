@@ -1,3 +1,2 @@
-shm
-timer
-threads
+*.o
+*.out
